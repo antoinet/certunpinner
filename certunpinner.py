@@ -72,16 +72,18 @@ class Apk:
         res.check_returncode()
 
     def patch_manifest(self):
-        print(f'{bcolors.WARNING}{bcolors.BOLD}[*] Patch AndroidManifest.xml{bcolors.ENDC}{bcolors.OKGREEN}')
+        manifest = self.apkdir + '/AndroidManifest.xml'
+        print(f'{bcolors.WARNING}{bcolors.BOLD}[*] Patch {manifest}{bcolors.ENDC}{bcolors.OKGREEN}')
         with xml.dom.minidom.parse(self.apkdir + '/AndroidManifest.xml') as dom:
             application = dom.getElementsByTagName('application')[0]
             application.setAttribute('android:networkSecurityConfig', '@xml/network_security_config')
             print(application.toprettyxml().splitlines()[0] + bcolors.ENDC)
-            with open('/Users/antoinet/git/publibike/app/PubliBike_v1.57.0_apkpure.com/AndroidManifest.xml', 'w') as xmlout:
+            with open(manifest, 'w') as xmlout:
                 dom.writexml(xmlout)
 
     def patch_ressources(self):
-        print(f'{bcolors.WARNING}{bcolors.BOLD}[*] Patch res/xml/network_security_config.xml{bcolors.ENDC}{bcolors.OKGREEN}')
+        netsecconfig = self.apkdir + '/res/xml/network_security_config.xml'
+        print(f'{bcolors.WARNING}{bcolors.BOLD}[*] Patch {netsecconfig}{bcolors.ENDC}{bcolors.OKGREEN}')
         xml = """<?xml version="1.0" encoding="utf-8"?>
 <network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
     <base-config>
@@ -92,7 +94,7 @@ class Apk:
     </base-config>
 </network-security-config>"""
         print(xml + bcolors.ENDC)
-        with open(self.apkdir + '/res/xml/network_security_config.xml', 'w') as outfile:
+        with open(netsecconfig, 'w') as outfile:
             outfile.write(xml)
 
     def cleanup(self):
